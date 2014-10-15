@@ -11,7 +11,7 @@ angular.module('textAngularSetup', [])
 // Here we set up the global display defaults, to set your own use a angular $provider#decorator.
 .value('taOptions',  {
 	toolbar: [
-		['bold', 'italics', 'underline', 'strikeThrough', 'ul', 'ol', 'redo', 'undo']
+		['bold', 'italics', 'underline', 'strikeThrough', 'ul', 'ol']
 	],
 	classes: {
 		focussed: "ta-focussed",
@@ -43,12 +43,6 @@ angular.module('textAngularSetup', [])
 	ol: {
 		tooltip: 'Ordered List'
 	},
-	undo: {
-		tooltip: 'Undo'
-	},
-	redo: {
-		tooltip: 'Redo'
-	},
 	bold: {
 		tooltip: 'Bold'
 	},
@@ -78,20 +72,6 @@ angular.module('textAngularSetup', [])
 			return this.$editor().wrapSelection("insertOrderedList", null);
 		},
 		activeState: function(){ return this.$editor().queryCommandState('insertOrderedList'); }
-	});
-	taRegisterTool('undo', {
-		iconclass: 'fa fa-undo',
-		tooltiptext: taTranslations.undo.tooltip,
-		action: function(){
-			return this.$editor().wrapSelection("undo", null);
-		}
-	});
-	taRegisterTool('redo', {
-		iconclass: 'fa fa-repeat',
-		tooltiptext: taTranslations.redo.tooltip,
-		action: function(){
-			return this.$editor().wrapSelection("redo", null);
-		}
 	});
 	taRegisterTool('bold', {
 		iconclass: 'fa fa-bold',
