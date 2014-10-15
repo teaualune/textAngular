@@ -663,28 +663,6 @@ See README.md or https://github.com/fraywing/textAngular/wiki for requirements a
 						_toolbars.triggerElementSelect(event, element);
 					});
 
-					scope.$on('ta-drop-event', function(event, element, dropEvent, dataTransfer){
-						scope.displayElements.text[0].focus();
-						if(dataTransfer && dataTransfer.files && dataTransfer.files.length > 0){
-							angular.forEach(dataTransfer.files, function(file){
-								// taking advantage of boolean execution, if the fileDropHandler returns true, nothing else after it is executed
-								// If it is false then execute the defaultFileDropHandler if the fileDropHandler is NOT the default one
-								// Once one of these has been executed wrap the result as a promise, if undefined or variable update the taBind, else we should wait for the promise
-								try{
-									$q.when(scope.fileDropHandler(file, scope.wrapSelection) ||
-										(scope.fileDropHandler !== scope.defaultFileDropHandler &&
-										scope.defaultFileDropHandler(file, scope.wrapSelection))).finally(function(){
-											scope['updateTaBindtaTextElement' + _serial]();
-										});
-								}catch(error){
-									$log.error(error);
-								}
-							});
-							dropEvent.preventDefault();
-							dropEvent.stopPropagation();
-						}
-					});
-
 					// the following is for applying the active states to the tools that support it
 					scope._bUpdateSelectedStyles = false;
 					// loop through all the tools polling their activeState function if it exists
@@ -939,16 +917,6 @@ See README.md or https://github.com/fraywing/textAngular/wiki for requirements a
 						}
 						taSelection.setSelectionToElementEnd($target[0]);
 						return;
-					}else if(command.toLowerCase() === 'createlink'){
-						var _selection = taSelection.getSelection();
-						if(_selection.collapsed){
-							// insert text at selection, then select then just let normal exec-command run
-							taSelection.insertHtml('<a href="' + options + '">' + options + '</a>');
-							return;
-						}
-					}else if(command.toLowerCase() === 'inserthtml'){
-						taSelection.insertHtml(options);
-						return;
 					}
 				}
 				try{
@@ -956,8 +924,8 @@ See README.md or https://github.com/fraywing/textAngular/wiki for requirements a
 				}catch(e){}
 			};
 		};
-	}]).directive('taBind', ['taSanitize', '$timeout', '$window', '$document', 'taFixChrome', 'taBrowserTag', 'taSelection', 'taSelectableElements', 'taApplyCustomRenderers', 'taOptions',
-					function(taSanitize, $timeout, $window, $document, taFixChrome, taBrowserTag, taSelection, taSelectableElements, taApplyCustomRenderers, taOptions){
+	}]).directive('taBind', ['taSanitize', '$timeout', '$window', '$document', 'taFixChrome', 'taBrowserTag', 'taSelection', 'taOptions',
+					function(taSanitize, $timeout, $window, $document, taFixChrome, taBrowserTag, taSelection, taOptions){
 		// Uses for this are textarea or input with ng-model and ta-bind='text'
 		// OR any non-form element with contenteditable="contenteditable" ta-bind="html|text" ng-model
 		return {
@@ -1143,31 +1111,7 @@ See README.md or https://github.com/fraywing/textAngular/wiki for requirements a
 					event.preventDefault();
 					return false;
 				};
-				var fileDropHandler = function(event, eventData){
-					/* istanbul ignore else: this is for catching the jqLite testing*/
-					if(eventData) angular.extend(event, eventData);
-					// emit the drop event, pass the element, preventing should be done elsewhere
-					if(!dropFired && !_isReadonly){
-						dropFired = true;
-						var dataTransfer;
-						if(event.originalEvent) dataTransfer = event.originalEvent.dataTransfer;
-						else dataTransfer = event.dataTransfer;
-						scope.$emit('ta-drop-event', this, event, dataTransfer);
-						$timeout(function(){dropFired = false;}, 100);
-					}
-				};
 
-				//used for updating when inserting wrapped elements
-				var _reApplyOnSelectorHandlers = scope['reApplyOnSelectorHandlers' + (attrs.id || '')] = function(){
-					/* istanbul ignore else */
-					if(!_isReadonly) angular.forEach(taSelectableElements, function(selector){
-							// check we don't apply the handler twice
-							element.find(selector)
-								.off('click', selectorClickHandler)
-								.on('click', selectorClickHandler);
-						});
-				};
-				
 				var _setInnerHTML = function(newval){
 					element[0].innerHTML = newval;
 				};
@@ -1195,16 +1139,8 @@ See README.md or https://github.com/fraywing/textAngular/wiki for requirements a
 							}else{
 								_setInnerHTML((val === '') ? _defaultVal : val);
 							}
-							// if in WYSIWYG and readOnly we kill the use of links by clicking
-							if(!_isReadonly){
-								_reApplyOnSelectorHandlers();
-								element.on('drop', fileDropHandler);
-							}else{
-								element.off('drop', fileDropHandler);
-							}
 						}else if(element[0].tagName.toLowerCase() !== 'textarea' && element[0].tagName.toLowerCase() !== 'input'){
 							// make sure the end user can SEE the html code as a display. This is a read-only display element
-							_setInnerHTML(taApplyCustomRenderers(val));
 						}else{
 							// only for input and textarea inputs
 							element.val(val);
@@ -1252,11 +1188,6 @@ See README.md or https://github.com/fraywing/textAngular/wiki for requirements a
 							if(element.attr('contenteditable') !== undefined && element.attr('contenteditable')){
 								element.removeAttr('contenteditable');
 							}
-							// turn ON selector click handlers
-							angular.forEach(taSelectableElements, function(selector){
-								element.find(selector).on('click', selectorClickHandler);
-							});
-							element.off('drop', fileDropHandler);
 						}else{
 							element.removeClass('ta-readonly');
 							// we changed to NOT readOnly mode (taReadonly='false')
@@ -1265,11 +1196,6 @@ See README.md or https://github.com/fraywing/textAngular/wiki for requirements a
 							}else if(_isContentEditable){
 								element.attr('contenteditable', 'true');
 							}
-							// remove the selector click handlers
-							angular.forEach(taSelectableElements, function(selector){
-								element.find(selector).off('click', selectorClickHandler);
-							});
-							element.on('drop', fileDropHandler);
 						}
 						_isReadonly = newVal;
 					});
@@ -1278,10 +1204,6 @@ See README.md or https://github.com/fraywing/textAngular/wiki for requirements a
 				// Initialise the selectableElements
 				// if in WYSIWYG and readOnly we kill the use of links by clicking
 				if(_isContentEditable && !_isReadonly){
-					angular.forEach(taSelectableElements, function(selector){
-						element.find(selector).on('click', selectorClickHandler);
-					});
-					element.on('drop', fileDropHandler);
 					element.on('blur', function(){
 						/* istanbul ignore next: webkit fix */
 						if(/AppleWebKit\/([\d.]+)/.exec(navigator.userAgent)) { // detect webkit
@@ -1290,30 +1212,6 @@ See README.md or https://github.com/fraywing/textAngular/wiki for requirements a
 					});
 				}
 			}
-		};
-	}]).factory('taApplyCustomRenderers', ['taCustomRenderers', function(taCustomRenderers){
-		return function(val){
-			var element = angular.element('<div></div>');
-			element[0].innerHTML = val;
-
-			angular.forEach(taCustomRenderers, function(renderer){
-				var elements = [];
-				// get elements based on what is defined. If both defined do secondary filter in the forEach after using selector string
-				if(renderer.selector && renderer.selector !== '')
-					elements = element.find(renderer.selector);
-				/* istanbul ignore else: shouldn't fire, if it does we're ignoring everything */
-				else if(renderer.customAttribute && renderer.customAttribute !== '')
-					elements = getByAttribute(element, renderer.customAttribute);
-				// process elements if any found
-				angular.forEach(elements, function(_element){
-					_element = angular.element(_element);
-					if(renderer.selector && renderer.selector !== '' && renderer.customAttribute && renderer.customAttribute !== ''){
-						if(_element.attr(renderer.customAttribute) !== undefined) renderer.renderLogic(_element);
-					} else renderer.renderLogic(_element);
-				});
-			});
-
-			return element[0].innerHTML;
 		};
 	}]).directive('taMaxText', function(){
 		return {

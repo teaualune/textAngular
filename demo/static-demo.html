@@ -9,8 +9,8 @@
 
   <meta name="robots" content="noindex">
 
-  <link rel='stylesheet prefetch' href='../bower_components/bootstrap/dist/css/bootstrap.min.css'>
-  <link rel='stylesheet prefetch' href='../bower_components/font-awesome/css/font-awesome.css'>
+  <link rel='stylesheet prefetch' href='http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css'>
+<link rel='stylesheet prefetch' href='http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css'>
   <link rel='stylesheet prefetch' href='../src/textAngular.css' media="screen">
 
 
@@ -73,7 +73,7 @@ img[ta-insert-video]{
   <h1>Option to masquerade as a fancy text-area - complete with form submission and optional ngModel</h1>
   <text-angular name="htmlcontent_nomodel"><p>Any <b>HTML</b> we put in-between the text-angular tags gets <a href="automatic">automatically</a> put into the editor if there <strong style="font-size: 12pt;"><u><em>is not</em></u></strong> a ngModel</p></text-angular>
 </div>
-  <script src='../bower_components/angular/angular.js'></script>
+  <script src='https://ajax.googleapis.com/ajax/libs/angularjs/1.2.19/angular.min.js'></script>
   <script src='../src/textAngular-sanitize.js'></script>
   <script src='../src/textAngularSetup.js'></script>
   <script src='../src/textAngular.js'></script>
@@ -84,19 +84,19 @@ img[ta-insert-video]{
 	.config(function($provide){
 		// this demonstrates how to register a new tool and add it to the default toolbar
 		$provide.decorator('taOptions', ['taRegisterTool', '$delegate', function(taRegisterTool, taOptions){ // $delegate is the taOptions we are decorating
-			taRegisterTool('test', {
-				buttontext: 'Test',
-				action: function(){ alert('Test Pressed') }
-			});
-			taOptions.toolbar[1].push('test');
-			taRegisterTool('colourRed', {
-	            iconclass: "fa fa-square red",
-	            action: function(){
-	                this.$editor().wrapSelection('forecolor', 'red');
-	            }
-	        });
-	        // add the button to the default toolbar definition
-	        taOptions.toolbar[1].push('colourRed');
+			// taRegisterTool('test', {
+			// 	buttontext: 'Test',
+			// 	action: function(){ alert('Test Pressed') }
+			// });
+			// taOptions.toolbar[1].push('test');
+			// taRegisterTool('colourRed', {
+	  //           iconclass: "fa fa-square red",
+	  //           action: function(){
+	  //               this.$editor().wrapSelection('forecolor', 'red');
+	  //           }
+	  //       });
+	  //       // add the button to the default toolbar definition
+	  //       taOptions.toolbar[1].push('colourRed');
 			return taOptions;
 		}]);
 		// this demonstrates changing the classes of the icons for the tools for font-awesome v3.x
