@@ -11,7 +11,8 @@ angular.module('textAngularSetup', [])
 // Here we set up the global display defaults, to set your own use a angular $provider#decorator.
 .value('taOptions',  {
 	toolbar: [
-		['bold', 'italics', 'underline', 'strikeThrough', 'ul', 'ol', 'insertLink']
+		['redo', 'undo'],
+		['h1', 'p', 'bold', 'italics', 'underline', 'strikeThrough', 'ul', 'ol', 'insertLink']
 	],
 	classes: {
 		focussed: "ta-focussed",
@@ -37,6 +38,18 @@ angular.module('textAngularSetup', [])
 	//insertImage: "Please enter a image URL to insert",
 	insertLink: "URL...",
 	//insertVideo: "Please enter a youtube URL to embed",
+	h1: {
+		tooltip: 'Heading'
+	},
+	p: {
+		tooltip: 'Paragraph'
+	},
+	undo: {
+		tooltip: 'Undo'
+	},
+	redo: {
+		tooltip: 'Redo'
+	},
 	ul: {
 		tooltip: 'Unordered List'
 	},
@@ -57,6 +70,24 @@ angular.module('textAngularSetup', [])
 	}
 })
 .run(['taRegisterTool', '$window', 'taTranslations', function(taRegisterTool, $window, taTranslations){
+	taRegisterTool('h1', {
+		iconclass: 'fa fa-header',
+		tooltiptext: taTranslations.h1.tooltip,
+		action: function(){
+			return this.$editor().wrapSelection("formatBlock", "<H1>");
+		},
+		activeState: function(){
+			return function(){ return this.$editor().queryFormatBlockState('h1'); };
+		}
+	});
+	taRegisterTool('p', {
+		iconclass: 'fa fa-paragraph',
+		tooltiptext: taTranslations.p.tooltip,
+		action: function(){
+			return this.$editor().wrapSelection("formatBlock", "<P>");
+		},
+		activeState: function(){ return this.$editor().queryFormatBlockState('p'); }
+	});
 	taRegisterTool('ul', {
 		iconclass: 'fa fa-list-ul',
 		tooltiptext: taTranslations.ul.tooltip,
@@ -72,6 +103,20 @@ angular.module('textAngularSetup', [])
 			return this.$editor().wrapSelection("insertOrderedList", null);
 		},
 		activeState: function(){ return this.$editor().queryCommandState('insertOrderedList'); }
+	});
+	taRegisterTool('undo', {
+		iconclass: 'fa fa-undo',
+		tooltiptext: taTranslations.undo.tooltip,
+		action: function(){
+			return this.$editor().wrapSelection("undo", null);
+		}
+	});
+	taRegisterTool('redo', {
+		iconclass: 'fa fa-repeat',
+		tooltiptext: taTranslations.redo.tooltip,
+		action: function(){
+			return this.$editor().wrapSelection("redo", null);
+		}
 	});
 	taRegisterTool('bold', {
 		iconclass: 'fa fa-bold',
