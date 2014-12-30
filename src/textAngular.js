@@ -995,9 +995,9 @@ See README.md or https://github.com/fraywing/textAngular/wiki for requirements a
 						var text;
 						// for non-ie
 						if(e.clipboardData || (e.originalEvent && e.originalEvent.clipboardData)){
-							text = (e.originalEvent || e).clipboardData.getData('text/html');
+							// text = (e.originalEvent || e).clipboardData.getData('text/html');
 							/* istanbul ignore next: special catch case */
-							if(!text) text = (e.originalEvent || e).clipboardData.getData('text/plain');
+							text = (e.originalEvent || e).clipboardData.getData('text/plain');
 						// for ie
 						}else if($window.clipboardData)
 							text = $window.clipboardData.getData('Text');
