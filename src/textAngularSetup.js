@@ -18,9 +18,9 @@ angular.module('textAngularSetup', [])
 		focussed: "ta-focussed",
 		toolbar: "ta-toolbar",
 		toolbarGroup: "ta-button-group",
-		toolbarButton: "pure-button",
-		toolbarButtonActive: "pure-button-active",
-		disabled: "pure-button-disabled",
+		toolbarButton: "ta-toolbar-button",
+		toolbarButtonActive: "ta-toolbar-button-active",
+		disabled: "ta-toolbar-button-disabled",
 		textEditor: 'form-control',
 		htmlEditor: 'form-control'
 	},
@@ -195,7 +195,7 @@ angular.module('textAngularSetup', [])
 				});
 				container.append(link);
 				var buttonGroup = angular.element('<div class="pull-right">');
-				var reLinkButton = angular.element('<button class="pure-button" tabindex="-1" unselectable="on"><i class="fa fa-edit icon-edit"></i></button>');
+				var reLinkButton = angular.element('<button class="ta-toolbar-button" tabindex="-1" unselectable="on"><i class="fa fa-edit icon-edit"></i></button>');
 				reLinkButton.on('click', function(event){
 					event.preventDefault();
 					var urlLink = $window.prompt(taTranslations.insertLink.dialogPrompt, $element.attr('href'));
@@ -206,7 +206,7 @@ angular.module('textAngularSetup', [])
 					editorScope.hidePopover();
 				});
 				buttonGroup.append(reLinkButton);
-				var unLinkButton = angular.element('<button class="pure-button" tabindex="-1" unselectable="on"><i class="fa fa-unlink icon-unlink"></i></button>');
+				var unLinkButton = angular.element('<button class="ta-toolbar-button" tabindex="-1" unselectable="on"><i class="fa fa-unlink icon-unlink"></i></button>');
 				// directly before this click event is fired a digest is fired off whereby the reference to $element is orphaned off
 				unLinkButton.on('click', function(event){
 					event.preventDefault();
