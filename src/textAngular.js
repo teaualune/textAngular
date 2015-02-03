@@ -924,8 +924,8 @@ See README.md or https://github.com/fraywing/textAngular/wiki for requirements a
 				}catch(e){}
 			};
 		};
-	}]).directive('taBind', ['taSanitize', '$timeout', '$window', '$document', 'taFixChrome', 'taBrowserTag', 'taSelection', 'taOptions',
-					function(taSanitize, $timeout, $window, $document, taFixChrome, taBrowserTag, taSelection, taOptions){
+	}]).directive('taBind', ['taSanitize', '$timeout', '$window', '$document', 'taBrowserTag', 'taSelection', 'taOptions',
+					function(taSanitize, $timeout, $window, $document, taBrowserTag, taSelection, taOptions){
 		// Uses for this are textarea or input with ng-model and ta-bind='text'
 		// OR any non-form element with contenteditable="contenteditable" ta-bind="html|text" ng-model
 		return {
@@ -1090,7 +1090,7 @@ See README.md or https://github.com/fraywing/textAngular/wiki for requirements a
 				// catch DOM XSS via taSanitize
 				// Sanitizing both ways is identical
 				var _sanitize = function(unsafe){
-					return (ngModel.$oldViewValue = taSanitize(taFixChrome(unsafe), ngModel.$oldViewValue, _disableSanitizer));
+					return (ngModel.$oldViewValue = taSanitize(unsafe, ngModel.$oldViewValue, _disableSanitizer));
 				};
 				
 				// trigger the validation calls
@@ -1281,6 +1281,7 @@ See README.md or https://github.com/fraywing/textAngular/wiki for requirements a
 				ctrl.$parsers.unshift(validator);
 			}
 		};
+/*
 	}).factory('taFixChrome', function(){
 		// get whaterever rubbish is inserted in chrome
 		// should be passed an html string, returns an html string
@@ -1306,6 +1307,7 @@ See README.md or https://github.com/fraywing/textAngular/wiki for requirements a
 			return $html[0].innerHTML;
 		};
 		return taFixChrome;
+*/
 	}).factory('taSanitize', ['$sanitize', function taSanitizeFactory($sanitize){
 		return function taSanitize(unsafe, oldsafe, ignore){
 			// unsafe and oldsafe should be valid HTML strings
