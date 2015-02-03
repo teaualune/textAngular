@@ -23,6 +23,12 @@ angular.module('textAngularSetup', [])
 		disabled: "ta-toolbar-button-disabled",
 		textEditor: 'form-control',
 		htmlEditor: 'form-control'
+	},
+	setup: {
+		// wysiwyg mode
+		textEditorSetup: angular.noop,
+		// raw html
+		htmlEditorSetup: angular.noop
 	}
 })
 
