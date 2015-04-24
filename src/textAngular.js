@@ -655,9 +655,11 @@ See README.md or https://github.com/fraywing/textAngular/wiki for requirements a
 						_toolbars = textAngularManager.registerEditor(_name, scope, ['textAngularToolbar' + _serial]);
 					}
 
-					scope.$on('$destroy', function(){
+					var onDestroy = function () {
 						textAngularManager.unregisterEditor(_name);
-					});
+					};
+					scope.$on('$destroy', onDestroy);
+					element.on('$destroy', onDestroy);
 
 					// catch element select event and pass to toolbar tools
 					scope.$on('ta-element-select', function(event, element){
@@ -1512,9 +1514,11 @@ See README.md or https://github.com/fraywing/textAngular/wiki for requirements a
 
 					textAngularManager.registerToolbar(scope);
 
-					scope.$on('$destroy', function(){
+					var onDestroy = function () {
 						textAngularManager.unregisterToolbar(scope.name);
-					});
+					};
+					scope.$on('$destroy', onDestroy);
+					element.on('$destroy', onDestroy);
 				}
 			};
 		}
