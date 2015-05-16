@@ -73,7 +73,7 @@ module.exports = function (grunt) {
 			},
 			my_target: {
 				files: {
-					'dist/textAngular.min.js': ['src/textAngularSetup.js','src/textAngular.js'],
+					'dist/textAngular.min.js': ['src/textAngular.js','src/textAngularSetup.js'],
 					'dist/textAngular-sanitize.min.js': ['src/textAngular-sanitize.js']
 				}
 			}
